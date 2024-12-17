@@ -1,0 +1,111 @@
+class Account:
+    currency = "INR"
+    minimum_balance = 3000
+    bank_name = "Bank"
+
+    def _init_(self, account_number, holder_name, account_type, initial_balance):
+        self.account_number = account_number
+        self.holder_name = holder_name
+        self.account_type = account_type
+        self.balance = initial_balance
+
+        if self.balance < Account.minimum_balance:
+            raise ValueError(f"Initial balance must be at least {Account.minimum_balance} {Account.currency}")
+
+    def deposit(self, amount):
+        if amount > 0:
+            self.balance += amount
+            print(f"Deposited {amount} {Account.currency}")
+        else:
+            print("Deposit amount must be positive.")
+
+    def withdraw(self, amount):
+        if amount > 0:
+            if self.balance - amount >= Account.minimum_balance:
+                self.balance -= amount
+                print(f"Withdrew {amount} {Account.currency}")
+            else:
+                print(f"Cannot withdraw. Minimum balance of {Account.minimum_balance} {Account.currency} required.")
+        else:
+            print("Withdrawal amount must be positive.")
+
+    def balance_enquiry(self):
+        print(f"Current balance: {self.balance} {Account.currency}")
+
+    def display_details(self):
+        print(f"Account Number: {self.account_number}")
+        print(f"Holder Name: {self.holder_name}")
+        print(f"Account Type: {self.account_type}")
+        print(f"Balance: {self.balance} {Account.currency}")
+        print(f"Bank Name: {Account.bank_name}")
+
+
+def is_valid_float(value):
+    if value.replace('.', '', 1).isdigit():
+        return True
+    return False
+
+
+def main():
+    while True:
+        acc_number = input("Enter 10-digit account number: ")
+        if len(acc_number) == 10 and acc_number.isdigit():
+            break
+        else:
+            print("Invalid input! Account number must be exactly 10 digits.")
+
+    while True:
+        holder_name = input("Enter account holder name: ")
+        if all(char.isalpha() or char == ' ' or char == '.' for char in holder_name):
+            break
+        else:
+            print("Invalid name. Please enter only alphabetic characters, spaces, or dots.")
+
+    while True:
+        acc_type = input("Enter account type (Saving/Current): ")
+        if acc_type in ["Saving", "Current"]:
+            break
+        else:
+            print("Invalid account type. Please enter either 'Saving' or 'Current'.")
+
+    while True:
+        initial_balance_input = input(f"Enter initial balance (minimum {Account.minimum_balance} {Account.currency}): ")
+        if is_valid_float(initial_balance_input):
+            initial_balance = float(initial_balance_input)
+            if initial_balance >= Account.minimum_balance:
+                break
+            else:
+                print(f"Initial balance must be at least {Account.minimum_balance} {Account.currency}. Please enter a valid amount.")
+        else:
+            print("Invalid input. Please enter a valid numeric value.")
+
+    account = Account(acc_number, holder_name, acc_type, initial_balance)
+
+    while True:
+        print("\n1. Deposit\n2. Withdraw\n3. Balance Enquiry\n4. Display Account Details\n5. Exit")
+        choice = input("Choose an option: ")
+
+        if choice == "1":
+            amount_input = input("Enter amount to deposit: ")
+            if is_valid_float(amount_input):
+                account.deposit(float(amount_input))
+            else:
+                print("Invalid input. Please enter a valid numeric value.")
+        elif choice == "2":
+            amount_input = input("Enter amount to withdraw: ")
+            if is_valid_float(amount_input):
+                account.withdraw(float(amount_input))
+            else:
+                print("Invalid input. Please enter a valid numeric value.")
+        elif choice == "3":
+            account.balance_enquiry()
+        elif choice == "4":
+            account.display_details()
+        elif choice == "5":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid option. Try again.")
+
+
+main()

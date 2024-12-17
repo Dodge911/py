@@ -1,0 +1,87 @@
+class Date:
+    month_31_days = (1, 3, 5, 7, 8, 10, 12)
+    month_30_days = (4, 6, 9, 11)
+
+    def _init_(self, d, m, y):
+        if self.is_valid_date(d, m, y):
+            self.d = d
+            self.m = m
+            self.y = y
+        else:
+            self.d, self.m, self.y = None, None, None  
+
+    def is_valid_date(self, d, m, y):
+        # Check day first
+        if d < 1:
+            print("Invalid day! Day should be greater than 0.")
+            return False
+
+        # Check month next
+        if m < 1 or m > 12:
+            print("Invalid month! Month should be between 1 and 12.")
+            return False
+
+        # Now validate the day based on the month
+        if m in self.month_31_days:
+            if d > 31:
+                print(f"Invalid day! Month {m} can only have 31 days.")
+                return False
+        elif m in self.month_30_days:
+            if d > 30:
+                print(f"Invalid day! Month {m} can only have 30 days.")
+                return False
+        elif m == 2:
+            if self.is_leap_year(y) and d > 29:
+                print(f"Invalid day! February in leap year {y} can only have 29 days.")
+                return False
+            elif not self.is_leap_year(y) and d > 28:
+                print(f"Invalid day! February in year {y} can only have 28 days.")
+                return False
+
+        return True
+
+    def is_leap_year(self, y):
+        return y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)
+
+    def add_day(self):
+        if not self.is_valid():
+            return 
+        self.d += 1
+
+        while True: 
+            if self.m in self.month_31_days and self.d > 31:
+                self.d = 1
+                self.m += 1
+            elif self.m in self.month_30_days and self.d > 30:
+                self.d = 1
+                self.m += 1
+            elif self.m == 2:
+                if self.is_leap_year(self.y) and self.d > 29:
+                    self.d = 1
+                    self.m += 1
+                elif not self.is_leap_year(self.y) and self.d > 28:
+                    self.d = 1
+                    self.m += 1
+
+            if self.m > 12: 
+                self.m = 1
+                self.y += 1
+
+            if self.is_valid_date(self.d, self.m, self.y):
+                break  
+                
+    def is_valid(self):
+        return self.d is not None and self.m is not None and self.y is not None
+
+# User input
+d = int(input("Enter day: "))
+m = int(input("Enter month: "))
+y = int(input("Enter year: "))
+date_input = Date(d, m, y)
+
+date_input.add_day()  
+
+if date_input.is_valid():
+    print(f"New date: {date_input.d}-{date_input.m}-{date_input.y}")  
+else:
+    print("Invalid date")
